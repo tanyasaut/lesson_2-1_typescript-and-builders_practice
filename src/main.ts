@@ -1,23 +1,30 @@
 import './style.css'
+import logoUrl from './assets/workshop.svg';
+import type { Booking } from './models/booking';
+import { countSeats } from './lib/count-seats';
 
 // А1: замените выведенный тип Booking явным interface и добавьте BookingStatus.
-const initialBookings = [
-  { id: 'b1', name: 'Анна', seats: 1, status: 'confirmed' },
-  { id: 'b2', name: 'Илья', seats: 1, status: 'new' },
+const initialBookings: Booking[] = [
+  { id: 'b1', name: 'Анна', seats: 1, status: 'confirmed', source: 'web' },
+  { id: 'b2', name: 'Илья', seats: 1, status: 'new', source: 'web' },
 ]
-type Booking = (typeof initialBookings)[number]
-const bookings: Array<Booking> = [...initialBookings]
+const bookings: Booking[] = [...initialBookings]
 
 // А2: явно задайте Booking[] и тип результата, считайте сумму seats.
-function countSeats(items: typeof initialBookings) {
-  return items.length
-}
+
 
 // А3: пока каждая заявка означает одного участника.
 // Замените тело проверкой raw и преобразованием в целое число от 1 до 5.
 function readSeats(raw: FormDataEntryValue | null): number | null {
-  void raw
-  return 1
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  const num = Number(trimmed);
+  if (!Number.isInteger(num)) return null;
+  if (num < 1 || num > 5) return null;
+
+  return num;
 }
 
 const app = document.querySelector<HTMLDivElement>('#app')
@@ -59,7 +66,7 @@ function render(items: Booking[], target: HTMLUListElement, counter: HTMLElement
     title.textContent = booking.name
     const details = document.createElement('span')
     // А4: добавьте source в эту строку после изменения модели.
-    details.textContent = `${booking.seats} участн. · ${booking.status === 'confirmed' ? 'Подтверждена' : 'Новая'}`
+    details.textContent = `${booking.seats} участн. · ${booking.status === 'confirmed' ? 'Подтверждена' : 'Новая'} · ${booking.source}`
     item.append(title, details)
     target.append(item)
   })
@@ -79,8 +86,8 @@ form.addEventListener('submit', (event) => {
     message.textContent = 'Введите целое число участников от 1 до 5.'
     return
   }
-  const booking: Booking = {
-    id: crypto.randomUUID(), name: rawName.trim(), seats, status: 'new',
+    const booking: Booking = {
+    id: crypto.randomUUID(), name: rawName.trim(), seats, status: 'new', source: 'web',
   }
   bookings.push(booking)
   render(bookings, list, totalElement)
