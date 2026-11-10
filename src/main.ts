@@ -33,12 +33,11 @@ app.innerHTML = `
   <main class="workspace">
     <header><div><span class="eyebrow">ВЕБ-МАСТЕРСКАЯ</span><h1>Запись на занятия</h1>
       <p>Небольшие группы. Большие идеи.</p></div><img id="logo" alt="" hidden width="84" height="84"></header>
-    <aside class="notice">Стартовая версия: одна заявка = один участник. На практике добавьте размер группы от 1 до 5.</aside>
     <div class="columns"><section class="panel"><h2>Новая заявка</h2>
       <form id="booking-form" novalidate>
         <label>Имя<input name="name" autocomplete="given-name" placeholder="Как к вам обращаться?"></label>
         <label>Участников<input name="seats" type="text" inputmode="numeric" value="1" aria-describedby="seats-hint"></label>
-        <small id="seats-hint">Целое число от 1 до 5. Обработка этого поля входит в практику.</small>
+        <small id="seats-hint">Целое число от 1 до 5.</small>
         <button type="submit">Записаться</button><p id="message" role="status" aria-live="polite"></p>
       </form></section>
       <section class="panel"><div class="list-heading"><h2>Заявки</h2><span class="counter">Участников: <strong id="total">0</strong></span></div>
@@ -57,6 +56,9 @@ if (!(form instanceof HTMLFormElement) || !(list instanceof HTMLUListElement)
   throw new Error('Не найдены элементы интерфейса')
 }
 // Б3: импортируйте картинку, задайте logo.src и logo.hidden = false.
+logo.src = logoUrl;
+logo.hidden = false;
+logo.alt = '';
 
 function render(items: Booking[], target: HTMLUListElement, counter: HTMLElement) {
   target.replaceChildren()
